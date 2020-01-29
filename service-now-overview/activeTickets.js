@@ -416,7 +416,6 @@ function appendStyleToHead() {
       }
 
       .ticket:hover {
-        transform: scale(1.03);
         box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
         cursor: pointer;
       }
