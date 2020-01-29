@@ -311,21 +311,19 @@ function createTicketRow3Element(ticket) {
 
 function createTicket(ticket) {
   const ticketListElement = document.createElement("li");
-
   ticketListElement.className = "ticket";
-
-  ticketListElement.addEventListener(
-    "click",
-    () => window.open(ticket.link),
-    false
-  );
+  const aElement = document.createElement("a");
+  aElement.href = ticket.link;
+  aElement.target = '_blank';
+  aElement.referrerPolicy = "noopener noreferrer"
+  ticketListElement.appendChild(aElement);
 
   ticketListElement.style.cssText =
     ticket.priority.substring(0, 1) <= 3 ? "border-left: 3px solid red" : "";
 
-  ticketListElement.appendChild(createTicketRow1Element(ticket));
-  ticketListElement.appendChild(createTicketRow2Element(ticket));
-  ticketListElement.appendChild(createTicketRow3Element(ticket));
+  aElement.appendChild(createTicketRow1Element(ticket));
+  aElement.appendChild(createTicketRow2Element(ticket));
+  aElement.appendChild(createTicketRow3Element(ticket));
 
   return ticketListElement;
 }
@@ -356,6 +354,11 @@ function appendStyleToHead() {
         color: #212529;
         margin: 0;
         padding: 0;
+      }
+
+      a {
+        text-decoration: none !important;
+        color: inherit;
       }
 
       .loaderContainer {
