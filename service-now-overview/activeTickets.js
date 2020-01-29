@@ -474,8 +474,8 @@ function appendStyleToHead() {
       }
 
       .hasPr {
-        height: 12px;
-        width: 12px;
+        height: 16px;
+        width: 16px;
         margin-right: 4px;
       }
 
