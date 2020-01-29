@@ -184,17 +184,6 @@ function renderContent(tickets) {
     `In testing (${tickets.stagedForReleaseTickets.length})`
   );
 
-  window.setTimeout(
-    () =>
-      drawChart(
-        tickets.todoTickets.length,
-        tickets.workingTickets.length,
-        tickets.blockedTickets.length,
-        tickets.approvedTickets.length,
-        tickets.stagedForReleaseTickets.length
-      ),
-    2000
-  );
   window.setTimeout(() => location.reload(), 5 * 60000);
 
   document.getElementById("loaderContainer").style.cssText = "display: none;";
@@ -515,18 +504,18 @@ function appendStyleToHead() {
         width: 115%;
         object-fit: cover;
       }
-      
+
       div {
         font-family: Open Sans;
       }
-      
+
       h1 {
         font-family: "Open Sans"; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px;
       }
-      
+
       h3 {
         font-family: "Open Sans"; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px;
-      } 
+      }
     </style>`
   );
 }
@@ -536,37 +525,11 @@ function documentWriteNecessaryStuff() {
     `<html>
         <head>
           <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-          <script type="text/javascript">
-            google.charts.load('current', {'packages':['corechart']});
-            google.charts.setOnLoadCallback(drawChart);
-
-            function drawChart(todo, working, blocked, approved, staged) {
-
-              var data = google.visualization.arrayToDataTable([
-                ['Type', 'Number'],
-                ['TODO', todo],
-                ['In progress', working],
-                ['Inf. req.',  blocked],
-                ['To test', approved],
-                ['Testing', staged]
-              ]);
-
-              var options = {
-                title: 'Overview of ticket status'
-              };
-
-              var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-              chart.draw(data, options);
-            }
-          </script>
         </head>
         <body>
           <h1>Uppdaterad ${new Date().toLocaleString("sv-SE")}</h1>
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
           <div id="summaryContainer"><div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div></div>
-          <div id="piechart" style="width: 900px; height: 500px;"></div>
         </body>
       </html>`
   );
