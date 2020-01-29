@@ -354,6 +354,8 @@ function appendStyleToHead() {
         font-weight: 400;
         line-height: 1.5;
         color: #212529;
+        margin: 0;
+        padding: 0;
       }
 
       .loaderContainer {
@@ -421,7 +423,12 @@ function appendStyleToHead() {
 
       .allTicketsColumnsContainer {
         display: flex;
-        margin-top: 32px;
+        padding: 32px;
+        justify-content: space-between;
+      }
+      
+      .allTicketsColumnsContainer ul:last-child {
+        margin-right: 0;
       }
 
       .ticketColumnsContainer {
@@ -528,7 +535,6 @@ function documentWriteNecessaryStuff() {
           <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
         </head>
         <body>
-          <h1>Uppdaterad ${new Date().toLocaleString("sv-SE")}</h1>
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
           <div id="summaryContainer"><div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div></div>
         </body>
