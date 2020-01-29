@@ -442,6 +442,7 @@ function appendStyleToHead() {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 16px;
+        border-bottom: 4px solid grey;
       }
 
       .ticketRow1 {
