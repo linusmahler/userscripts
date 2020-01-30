@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Closed tickets
-// @version      1.2.2
+// @version      1.2.3
 // @description  This script will show all closed GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -468,6 +468,7 @@
     document.write(
       `<html>
           <head>
+            <title>Closed tickets</title>
             <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
           </head>
           <body>
