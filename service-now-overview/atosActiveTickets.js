@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.0.2
+// @version      1.0.3
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -29,13 +29,13 @@
   }
 
   const changeTicketsUrl =
-    "https://siemensfs.service-now.com/change_request_list.do?sysparm_clear_stack=true&sysparm_query=assignment_groupLIKEApplication%20Developer%20-%20SieSmart%5Estate%3D0%5EORstate%3D2%5EORstate%3D1%5EORstate%3D105%5EORstate%3D103%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4&sysparm_fixed_query=";
+    "https://siemensfs.service-now.com/change_request_list.do?sysparm_clear_stack=true&sysparm_query=assignment_groupLIKEApplication%20Developer%20-%20SieSmart%5Estate%3D0%5EORstate%3D2%5EORstate%3D1%5EORstate%3D105%5EORstate%3D103%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4%5Eassigned_to!%3Dbf6e2316b4c1250031ed3f4524ff048e%5Eassigned_to!%3D150ec4fadb314c9486bf85294b9619ba&sysparm_fixed_query=";
   const grqTicketsUrl =
-    "https://siemensfs.service-now.com/u_generic_request_list.do?sysparm_clear_stack=true&sysparm_query=active%3Dtrue%5EstateIN1%2C103%2C4%5Eassignment_groupLIKEApplication%20Developer%20-%20SieSmart%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4&sysparm_fixed_query=";
+    "https://siemensfs.service-now.com/u_generic_request_list.do?sysparm_clear_stack=true&sysparm_query=active%3Dtrue%5EstateIN1%2C103%2C4%5Eassignment_groupLIKEApplication%20Developer%20-%20SieSmart%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4%5Eassigned_to!%3D150ec4fadb314c9486bf85294b9619ba%5Eassigned_to!%3Dbf6e2316b4c1250031ed3f4524ff048e&sysparm_fixed_query=";
   const incTicketsUrl =
-    "https://siemensfs.service-now.com/incident_list.do?sysparm_clear_stack=true&sysparm_query=u_stageNOT%20IN70%2C80%2C90%5Ecmdb_ciLIKESieSmart%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4&sysparm_fixed_query=";
+    "https://siemensfs.service-now.com/incident_list.do?sysparm_clear_stack=true&sysparm_query=u_stageNOT%20IN70%2C80%2C90%5Ecmdb_ciLIKESieSmart%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4%5Eassigned_to!%3D150ec4fadb314c9486bf85294b9619ba%5Eassigned_to!%3Dbf6e2316b4c1250031ed3f4524ff048e&sysparm_fixed_query=";
   const prbTicketsUrl =
-    "https://siemensfs.service-now.com/problem_list.do?sysparm_clear_stack=true&sysparm_query=active%3Dtrue%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4&sysparm_fixed_query=";
+    "https://siemensfs.service-now.com/problem_list.do?sysparm_clear_stack=true&sysparm_query=active%3Dtrue%5Eassigned_to!%3D79732760dbf84c50139622915b9619f7%5Eassigned_to!%3Db1b40e2fdb9c4814139622915b961912%5Eassigned_to!%3Dcf687223db374b80139622915b961956%5Eassigned_to!%3D407e2316b4c1250031ed3f4524ff0494%5Eassigned_to!%3D766bb9210faeda001d61b37ce1050e29%5Eassigned_to!%3D1b72ba735d2b1100dc16f30a1a5312f4%5Eassigned_to!%3D150ec4fadb314c9486bf85294b9619ba%5Eassigned_to!%3Dbf6e2316b4c1250031ed3f4524ff048e&sysparm_fixed_query=";
 
   const urls = [changeTicketsUrl, grqTicketsUrl, incTicketsUrl, prbTicketsUrl];
 
