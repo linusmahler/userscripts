@@ -160,31 +160,23 @@
 })();
 
 function renderContent(tickets) {
-  renderTicketsForColumn(
-    tickets.todoTickets,
-    `Todo (${tickets.todoTickets.length})`
-  );
+  renderTicketsForColumn(tickets.todoTickets, "Todo");
 
-  renderTicketsForColumn(
-    tickets.workingTickets,
-    `In progress (${tickets.workingTickets.length})`
-  );
+  renderTicketsForColumn(tickets.workingTickets, "In progress");
 
-  renderTicketsForColumn(
-    tickets.blockedTickets,
-    `Information Requested (${tickets.blockedTickets.length})`
-  );
+  renderTicketsForColumn(tickets.blockedTickets, "Information Requested");
 
-  renderTicketsForColumn(
-    tickets.approvedTickets,
-    `Waiting for test (${tickets.approvedTickets.length})`
-  );
+  renderTicketsForColumn(tickets.approvedTickets, "Waiting for test");
 
-  renderTicketsForColumn(
-    tickets.stagedForReleaseTickets,
-    `In testing (${tickets.stagedForReleaseTickets.length})`
-  );
+  renderTicketsForColumn(tickets.stagedForReleaseTickets, "In testing");
 
+  drawChart(
+    tickets.todoTickets.length,
+    tickets.workingTickets.length,
+    tickets.blockedTickets.length,
+    tickets.approvedTickets.length,
+    tickets.stagedForReleaseTickets.length
+  );
   window.setTimeout(() => location.reload(), 5 * 60000);
 
   document.getElementById("loaderContainer").style.cssText = "display: none;";
@@ -194,7 +186,6 @@ function renderContent(tickets) {
 function extractTicketDataFromRow(row) {
   const tdElements = row.querySelectorAll("td");
   const idLink = tdElements[2].querySelector("a");
-  const assignedToStr = tdElements[6].querySelector("a").text;
 
   return {
     id: idLink.text || "No id",
@@ -367,12 +358,12 @@ function appendStyleToHead() {
             padding: 0;
             background: black;
           }
-  
+
           a {
             text-decoration: none !important;
             color: inherit;
           }
-  
+
           .loaderContainer {
             display: flex;
             justify-content: center;
@@ -389,7 +380,7 @@ function appendStyleToHead() {
         no-repeat
         center center;
           }
-  
+
           .ticket {
             transition: 0.2s ease;
             padding: 8px;
@@ -398,22 +389,22 @@ function appendStyleToHead() {
             border: 0.75px solid #dadada;
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05);
           }
-  
+
           .ticket:hover {
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
             cursor: pointer;
           }
-  
+
           .allTicketsColumnsContainer {
             display: flex;
             padding: 32px;
             justify-content: space-between;
           }
-  
+
           .allTicketsColumnsContainer ul:last-child {
             margin-right: 0;
           }
-  
+
           .ticketColumnsContainer {
             list-style-type: none;
             margin: 0 16px 0 0;
@@ -422,11 +413,11 @@ function appendStyleToHead() {
             padding: 8px;
             background: #f5f5f5;
           }
-  
+
           .ticketColumnsContainer > div:last-child {
             margin-right: 0;
           }
-  
+
           .ticketHeader {
             font-family: Open Sans;
             font-size: 18px;
@@ -434,7 +425,7 @@ function appendStyleToHead() {
             margin-bottom: 16px;
             border-bottom: 4px solid grey;
           }
-  
+
           .ticketRow1 {
             display: flex;
             flex-direction: row;
@@ -442,43 +433,43 @@ function appendStyleToHead() {
             padding-bottom: 8px;
             border-bottom: 0.75px solid #f8f8f8;
           }
-  
+
           .ticketRow2 {
             display: flex;
             color: #808080;
             font-size: 12px;
           }
-  
+
           .id {
             margin-right: auto;
           }
-  
+
           .hasPr {
             height: 16px;
             width: 16px;
             margin-right: 4px;
           }
-  
+
           .priority {
             user-select: none;
           }
-  
+
           .ticketRow3 {
             display: flex;
             color: #808080;
             font-size: 12px;
           }
-  
+
           .version {
             margin-right: auto;
           }
-  
+
           .description {
             margin-bottom: 8px;
             padding-right: 8px;
             word-break: break-word;
           }
-  
+
           .assignedToContainer {
             user-select: none;
             min-width: 50px;
@@ -490,22 +481,26 @@ function appendStyleToHead() {
             background: #a8a8a8;
             margin: 0 0 0 auto;
           }
-  
+
           .assignedTo {
               font-size: 18px;
               line-height: 46px;
               color: white;
               text-align: center;
           }
-  
+
+          .headerContainer {
+            display: flex;
+          }
+
           div {
             font-family: Open Sans;
           }
-  
+
           h1 {
             font-family: "Open Sans"; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px;
           }
-  
+
           h3 {
             font-family: "Open Sans"; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px;
           }
@@ -519,11 +514,41 @@ function documentWriteNecessaryStuff() {
         <head>
           <title>Active tickets</title>
           <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart(todo, active, blocked, testing, deployed) {
+
+              var data = google.visualization.arrayToDataTable([
+                ['Task', 'Number of tickets'],
+                ['Todo', todo],
+                ['In progress', active],
+                ['Inf. requested', blocked],
+                ['Waiting for test', testing],
+                ['In testing', deployed]
+              ]);
+
+              var options = {
+                title: 'Ticket status overview'
+              };
+
+              var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+              chart.draw(data, options);
+            }
+          </script>
         </head>
         <body>
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
-          <div id="summaryContainer"><img height="201px" style="margin: 32px 0 0 32px;" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" /></div><div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div></div>
-          </body>
+          <div id="summaryContainer">
+            <div id="headerContainer" class="headerContainer">
+              <img height="201px" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" />
+              <div id="piechart" style="min-width: 400px; height: 201px;"></div>
+            </div>
+            <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
+          </div>
+        </body>
       </html>`
   );
 }
