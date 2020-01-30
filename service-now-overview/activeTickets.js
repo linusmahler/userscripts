@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.5.7
+// @version      1.6
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -340,6 +340,7 @@ function renderTicketsForColumn(ticketColumn, title) {
     .getElementById("allTicketsColumnsContainer")
     .appendChild(ticketColumnsContainer);
 }
+
 
 function documentWriteNecessaryStuff() {
   document.write(
