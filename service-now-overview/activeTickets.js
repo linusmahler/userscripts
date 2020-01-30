@@ -348,7 +348,7 @@ function documentWriteNecessaryStuff() {
         <head>
           <title>Active tickets</title>
           <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-          <link rel="stylesheet" type="text/css" href="https://raw.githubusercontent.com/linusmahler/userscripts/master/service-now-overview/styles.css?v=1" />
+          <link rel="stylesheet" type="text/css" href="https://gitcdn.link/repo/linusmahler/userscripts/master/service-now-overview/styles.css" />
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
           <script type="text/javascript">
             google.charts.load('current', {'packages':['corechart']});
