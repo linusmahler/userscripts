@@ -172,13 +172,19 @@ function renderContent(tickets) {
     tickets.approvedTickets.length,
     tickets.stagedForReleaseTickets.length
   );
+
   drawAssignmentChart([
     [
       { label: "Person", type: "string" },
       { label: "# assigned", type: "number" }
     ],
-    ["Linus", 12],
-    ["Tomten", 10]
+    ...summarizeTicketsByAssignee([
+      ...tickets.todoTickets,
+      ...tickets.workingTickets,
+      ...tickets.blockedTickets,
+      ...tickets.approvedTickets,
+      ...tickets.stagedForReleaseTickets
+    ])
   ]);
   window.setTimeout(() => location.reload(), 5 * 60000);
 
@@ -211,6 +217,21 @@ function extractTicketDataFromRow(row) {
         ) !== -1) ||
       false
   };
+}
+
+function summarizeTicketsByAssignee(tickets) {
+  const nameAndTicketNumbers = tickets.reduce(
+    (res, ticket) => ({
+      ...res,
+      [ticket.assignedToFullString]: (res[ticket.assignedToFullString] || 0) + 1
+    }),
+    {}
+  );
+
+  return Object.keys(nameAndTicketNumbers).map(key => [
+    key,
+    nameAndTicketNumbers[key]
+  ]);
 }
 
 function createHeadingElement(text, level) {
@@ -361,12 +382,12 @@ function appendStyleToHead() {
               padding: 0;
               background: black;
             }
-  
+
             a {
               text-decoration: none !important;
               color: inherit;
             }
-  
+
             .loaderContainer {
               display: flex;
               justify-content: center;
@@ -383,7 +404,7 @@ function appendStyleToHead() {
           no-repeat
           center center;
             }
-  
+
             .ticket {
               transition: 0.2s ease;
               padding: 8px;
@@ -392,22 +413,22 @@ function appendStyleToHead() {
               border: 0.75px solid #dadada;
               box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05);
             }
-  
+
             .ticket:hover {
               box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
               cursor: pointer;
             }
-  
+
             .allTicketsColumnsContainer {
               display: flex;
               padding: 32px;
               justify-content: space-between;
             }
-  
+
             .allTicketsColumnsContainer ul:last-child {
               margin-right: 0;
             }
-  
+
             .ticketColumnsContainer {
               list-style-type: none;
               margin: 0 16px 0 0;
@@ -416,11 +437,11 @@ function appendStyleToHead() {
               padding: 8px;
               background: #f5f5f5;
             }
-  
+
             .ticketColumnsContainer > div:last-child {
               margin-right: 0;
             }
-  
+
             .ticketHeader {
               font-family: Open Sans;
               font-size: 18px;
@@ -428,7 +449,7 @@ function appendStyleToHead() {
               margin-bottom: 16px;
               border-bottom: 4px solid grey;
             }
-  
+
             .ticketRow1 {
               display: flex;
               flex-direction: row;
@@ -436,43 +457,43 @@ function appendStyleToHead() {
               padding-bottom: 8px;
               border-bottom: 0.75px solid #f8f8f8;
             }
-  
+
             .ticketRow2 {
               display: flex;
               color: #808080;
               font-size: 12px;
             }
-  
+
             .id {
               margin-right: auto;
             }
-  
+
             .hasPr {
               height: 16px;
               width: 16px;
               margin-right: 4px;
             }
-  
+
             .priority {
               user-select: none;
             }
-  
+
             .ticketRow3 {
               display: flex;
               color: #808080;
               font-size: 12px;
             }
-  
+
             .version {
               margin-right: auto;
             }
-  
+
             .description {
               margin-bottom: 8px;
               padding-right: 8px;
               word-break: break-word;
             }
-  
+
             .assignedToContainer {
               user-select: none;
               min-width: 50px;
@@ -484,26 +505,28 @@ function appendStyleToHead() {
               background: #a8a8a8;
               margin: 0 0 0 auto;
             }
-  
+
             .assignedTo {
                 font-size: 18px;
                 line-height: 46px;
                 color: white;
                 text-align: center;
             }
-  
+
             .headerContainer {
               display: flex;
+align-items: center;
+margin-left: 32px;
             }
-  
+
             div {
               font-family: Open Sans;
             }
-  
+
             h1 {
               font-family: "Open Sans"; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px;
             }
-  
+
             h3 {
               font-family: "Open Sans"; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px;
             }
@@ -522,9 +545,9 @@ function documentWriteNecessaryStuff() {
               google.charts.load('current', {'packages':['corechart']});
               google.charts.setOnLoadCallback(drawOverviewChart);
               google.charts.setOnLoadCallback(drawAssignmentChart);
-  
+
               function drawOverviewChart(todo, active, blocked, testing, deployed) {
-  
+
                 var data = google.visualization.arrayToDataTable([
                   ['Task', 'Number of tickets'],
                   ['Todo', todo],
@@ -533,21 +556,21 @@ function documentWriteNecessaryStuff() {
                   ['Waiting for test', testing],
                   ['In testing', deployed]
                 ]);
-  
+
                 var options = {
                   title: 'Ticket status overview'
                 };
-  
+
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
                 chart.draw(data, options);
               }
-  
+
               function drawAssignmentChart(assignments) {
                 var data = google.visualization.arrayToDataTable(assignments);
                 var options = {
                   title: 'Assignment person breakdown'
                 };
-  
+
                 var chart = new google.visualization.PieChart(document.getElementById('piechart-assignment'));
                 chart.draw(data, options);
               }
@@ -557,7 +580,7 @@ function documentWriteNecessaryStuff() {
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
-              <img height="201px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
+              <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
               <div id="piechart" style="min-width: 400px; height: 201px;"></div>
               <div id="piechart-assignment" style="min-width: 400px; height: 201px;"></div>
             </div>
