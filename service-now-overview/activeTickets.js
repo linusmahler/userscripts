@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.7
+// @version      1.7.1
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -348,7 +348,6 @@ function documentWriteNecessaryStuff() {
         <head>
           <title>Active tickets</title>
           <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-          <link rel="stylesheet" type="text/css" href="https://gitcdn.link/repo/linusmahler/userscripts/master/service-now-overview/styles.css" />
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
           <script type="text/javascript">
             google.charts.load('current', {'packages':['corechart']});
@@ -383,6 +382,7 @@ function documentWriteNecessaryStuff() {
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
           </div>
+          <link rel="stylesheet" type="text/css" href="https://gitcdn.link/cdn/linusmahler/userscripts/master/service-now-overview/styles.css" />
         </body>
       </html>`
   );
