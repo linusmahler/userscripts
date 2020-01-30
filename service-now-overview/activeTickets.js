@@ -161,13 +161,9 @@
 
 function renderContent(tickets) {
   renderTicketsForColumn(tickets.todoTickets, "Todo");
-
   renderTicketsForColumn(tickets.workingTickets, "In progress");
-
   renderTicketsForColumn(tickets.blockedTickets, "Information Requested");
-
   renderTicketsForColumn(tickets.approvedTickets, "Waiting for test");
-
   renderTicketsForColumn(tickets.stagedForReleaseTickets, "In testing");
 
   drawChart(
