@@ -511,8 +511,8 @@ function documentWriteNecessaryStuff() {
         </head>
         <body>
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
-          <div id="summaryContainer"><div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div></div>
-        </body>
+          <div id="summaryContainer"><img height="201px" style="margin: 32px 0 0 32px;" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" /></div><div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div></div>
+          </body>
       </html>`
   );
 }
