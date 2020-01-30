@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.1
+// @version      1.1.1
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -513,10 +513,15 @@ function appendStyleToHead() {
                 text-align: center;
             }
 
+            .chart {
+              min-width: 400px;
+              height: 201px;
+            }
+
             .headerContainer {
               display: flex;
-align-items: center;
-margin-left: 32px;
+              align-items: center;
+              margin-left: 32px;
             }
 
             div {
@@ -558,7 +563,8 @@ function documentWriteNecessaryStuff() {
                 ]);
 
                 var options = {
-                  title: 'Ticket status overview'
+                  title: 'Ticket status overview',
+                  width: 600,
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -568,7 +574,8 @@ function documentWriteNecessaryStuff() {
               function drawAssignmentChart(assignments) {
                 var data = google.visualization.arrayToDataTable(assignments);
                 var options = {
-                  title: 'Assignment person breakdown'
+                  title: 'Assignment person breakdown',
+                  width: 600,
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('piechart-assignment'));
@@ -581,8 +588,8 @@ function documentWriteNecessaryStuff() {
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
               <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
-              <div id="piechart" style="min-width: 400px; height: 201px;"></div>
-              <div id="piechart-assignment" style="min-width: 400px; height: 201px;"></div>
+              <div id="piechart" class="chart" ></div>
+              <div id="piechart-assignment" class="chart"></div>
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
           </div>
