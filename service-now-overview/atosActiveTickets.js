@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.1.1
+// @version      1.1.2
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -189,6 +189,7 @@ function renderContent(tickets) {
   window.setTimeout(() => location.reload(), 5 * 60000);
 
   document.getElementById("loaderContainer").style.cssText = "display: none;";
+  document.getElementById("headerContainer").style.cssText = "display: flex;";
   document.body.style.background = "white";
 }
 
@@ -519,7 +520,7 @@ function appendStyleToHead() {
             }
 
             .headerContainer {
-              display: flex;
+              display: none;
               align-items: center;
               margin-left: 32px;
             }
