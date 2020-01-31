@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.1.3
+// @version      1.1.4
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -178,18 +178,14 @@ function renderContent(tickets) {
     tickets.stagedForReleaseTickets.length
   );
 
-  drawAssignmentChart([
-    [
-      { label: "Person", type: "string" },
-      { label: "# assigned", type: "number" }
-    ],
+  drawAssignmentChart([["Namn", "Antal tickets"],
     ...summarizeTicketsByAssignee([
       ...tickets.todoTickets,
       ...tickets.workingTickets,
       ...tickets.blockedTickets,
       ...tickets.approvedTickets,
       ...tickets.stagedForReleaseTickets
-    ])
+    ]).sort(comparePerformance).slice(0, 5)
   ]);
   window.setTimeout(() => location.reload(), 5 * 60000);
 
@@ -229,7 +225,7 @@ function summarizeTicketsByAssignee(tickets) {
   const nameAndTicketNumbers = tickets.reduce(
     (res, ticket) => ({
       ...res,
-      [ticket.assignedToFullString]: (res[ticket.assignedToFullString] || 0) + 1
+      [ticket.assignedToFullString]: parseInt((res[ticket.assignedToFullString] || 0) + 1, 10)
     }),
     {}
   );
@@ -254,6 +250,18 @@ function compare(a, b) {
 
   if (a.priority > b.priority) {
     return 1;
+  }
+
+  return 0;
+}
+
+function comparePerformance([, a], [, b]) {
+  if (a < b) {
+    return 1;
+  }
+
+  if (a > b) {
+    return -1;
   }
 
   return 0;
@@ -554,14 +562,13 @@ function documentWriteNecessaryStuff() {
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
+              google.charts.load('45', {'packages':['bar']});
               google.charts.load('current', {'packages':['gauge']});
               google.charts.setOnLoadCallback(drawGaugeChart);
               google.charts.setOnLoadCallback(drawOverviewChart);
               google.charts.setOnLoadCallback(drawAssignmentChart);
 
               function drawGaugeChart(normalizedDoernValue, nrTickets) {
-                console.log('Called drawGaugeChart with normalizedDoernValue: ', normalizedDoernValue, ' and nrTickets: ', nrTickets);
-
                 var data = google.visualization.arrayToDataTable([
                   ['Dörn', 'Värde'],
                   ['', normalizedDoernValue],
@@ -581,6 +588,7 @@ function documentWriteNecessaryStuff() {
 
                 chart.draw(data, options);
               }
+
               function drawOverviewChart(todo, active, blocked, testing, deployed) {
 
                 var data = google.visualization.arrayToDataTable([
@@ -604,12 +612,19 @@ function documentWriteNecessaryStuff() {
 
               function drawAssignmentChart(assignments) {
                 var data = google.visualization.arrayToDataTable(assignments);
+
                 var options = {
-                  title: 'Assignment person breakdown',
-                  width: 600,
+                  title: 'Workload assignment distribution',
+                  chartArea: {width: '50%'},
+                  legend: 'none',
+                  hAxis: {
+                    title: 'Antal tickets',
+                    minValue: 0
+                  },
                 };
 
-                var chart = new google.visualization.PieChart(document.getElementById('piechart-assignment'));
+                var chart = new google.visualization.BarChart(document.getElementById('barchart'));
+
                 chart.draw(data, options);
               }
             </script>
@@ -621,7 +636,7 @@ function documentWriteNecessaryStuff() {
               <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
               <div id="gaugechart" style="width: 200px; height: 200px; margin-left: 32px;"></div>
               <div id="piechart" class="chart" ></div>
-              <div id="piechart-assignment" class="chart"></div>
+              <div id="barchart"></div>
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
           </div>
