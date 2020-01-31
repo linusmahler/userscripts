@@ -9,6 +9,7 @@ import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 
 import Header from "./header"
+import "./reset.css"
 import "./layout.css"
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -28,8 +29,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div
         style={{
           margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
         }}
       >
         <main>{children}</main>
