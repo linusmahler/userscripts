@@ -88,7 +88,8 @@
 
     msgCount += 1;
     if (msgCount === 4) {
-      renderContent(ticketsByStatus);
+      document.getElementById("dashboard").contentWindow.postMessage(ticketsByStatus, "*");
+      //renderContent(ticketsByStatus);
     }
   });
 
@@ -376,6 +377,7 @@ function documentWriteNecessaryStuff() {
         <body>
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
           <div id="summaryContainer">
+            <iframe id="dashboard" src="https://localhost:8081" style="width:100%;height:100%;border:0"></iframe>
             <div id="headerContainer" class="headerContainer">
               <img height="201px" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" />
               <div id="piechart" style="min-width: 400px; height: 201px;"></div>
