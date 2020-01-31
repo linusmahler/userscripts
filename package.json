@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/linusmahler/userscripts/issues"
   },
-  "homepage": "https://github.com/linusmahler/userscripts#readme"
+  "homepage": "https://github.com/linusmahler/userscripts#readme",
+  "devDependencies": {
+    "gatsby-cli": "^2.8.28"
+  }
 }
