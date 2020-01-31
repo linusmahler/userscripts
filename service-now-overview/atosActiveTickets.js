@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.1.2
+// @version      1.1.3
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -165,6 +165,11 @@ function renderContent(tickets) {
   renderTicketsForColumn(tickets.blockedTickets, "Information Requested");
   renderTicketsForColumn(tickets.approvedTickets, "Waiting for test");
   renderTicketsForColumn(tickets.stagedForReleaseTickets, "In testing");
+
+  const allTickets = tickets.todoTickets.length + tickets.workingTickets.length + tickets.blockedTickets.length + tickets.approvedTickets.length + tickets.stagedForReleaseTickets.length;
+
+  drawGaugeChart((tickets.workingTickets.length + tickets.approvedTickets.length + tickets.stagedForReleaseTickets.length), allTickets);
+
   drawOverviewChart(
     tickets.todoTickets.length,
     tickets.workingTickets.length,
@@ -549,9 +554,33 @@ function documentWriteNecessaryStuff() {
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
+              google.charts.load('current', {'packages':['gauge']});
+              google.charts.setOnLoadCallback(drawGaugeChart);
               google.charts.setOnLoadCallback(drawOverviewChart);
               google.charts.setOnLoadCallback(drawAssignmentChart);
 
+              function drawGaugeChart(normalizedDoernValue, nrTickets) {
+                console.log('Called drawGaugeChart with normalizedDoernValue: ', normalizedDoernValue, ' and nrTickets: ', nrTickets);
+
+                var data = google.visualization.arrayToDataTable([
+                  ['Dörn', 'Värde'],
+                  ['', normalizedDoernValue],
+                ]);
+
+                var options = {
+                  width: 200, height: 200,
+                  redFrom: 0.25*nrTickets, redTo: 0.5*nrTickets,
+                  yellowFrom: 0.5*nrTickets, yellowTo: 0.75*nrTickets,
+                  greenFrom: 0.75*nrTickets, greenTo: nrTickets,
+                  max: nrTickets,
+                  minorTicks: 5,
+                  majorTicks: ['ZzzZz', 'Poor', 'Not terrible', 'Ok', 'Great'],
+                };
+
+                var chart = new google.visualization.Gauge(document.getElementById('gaugechart'));
+
+                chart.draw(data, options);
+              }
               function drawOverviewChart(todo, active, blocked, testing, deployed) {
 
                 var data = google.visualization.arrayToDataTable([
@@ -566,6 +595,7 @@ function documentWriteNecessaryStuff() {
                 var options = {
                   title: 'Ticket status overview',
                   width: 600,
+
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -589,6 +619,7 @@ function documentWriteNecessaryStuff() {
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
               <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
+              <div id="gaugechart" style="width: 200px; height: 200px; margin-left: 32px;"></div>
               <div id="piechart" class="chart" ></div>
               <div id="piechart-assignment" class="chart"></div>
             </div>
