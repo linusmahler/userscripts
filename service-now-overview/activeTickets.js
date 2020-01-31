@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.7.1
+// @version      1.7.2
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -377,7 +377,7 @@ function documentWriteNecessaryStuff() {
           <div id="loaderContainer" class="loaderContainer"><div class="loader"><div></div><div></div></div></div>
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
-              <img height="201px" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" />
+              <img height="201px" style="margin-top: 32px;" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" />
               <div id="piechart" style="min-width: 400px; height: 201px;"></div>
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
