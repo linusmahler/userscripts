@@ -9,9 +9,6 @@ const IndexPage: React.FC = () => (
   <Layout>
     <SEO title="Home" />
     <App />
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
   </Layout>
 )
 
