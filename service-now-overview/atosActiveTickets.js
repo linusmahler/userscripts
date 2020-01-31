@@ -622,7 +622,6 @@ function documentWriteNecessaryStuff() {
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
               <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
-              <div id="gaugechart" style="width: 200px; height: 200px; margin-left: 32px;"></div>
               <div id="piechart" class="chart" ></div>
               <div id="barchart"></div>
             </div>
