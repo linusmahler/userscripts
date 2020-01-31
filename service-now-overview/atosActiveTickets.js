@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.1.4
+// @version      1.2
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -166,10 +166,6 @@ function renderContent(tickets) {
   renderTicketsForColumn(tickets.approvedTickets, "Waiting for test");
   renderTicketsForColumn(tickets.stagedForReleaseTickets, "In testing");
 
-  const allTickets = tickets.todoTickets.length + tickets.workingTickets.length + tickets.blockedTickets.length + tickets.approvedTickets.length + tickets.stagedForReleaseTickets.length;
-
-  drawGaugeChart((tickets.workingTickets.length + tickets.approvedTickets.length + tickets.stagedForReleaseTickets.length), allTickets);
-
   drawOverviewChart(
     tickets.todoTickets.length,
     tickets.workingTickets.length,
@@ -178,14 +174,16 @@ function renderContent(tickets) {
     tickets.stagedForReleaseTickets.length
   );
 
-  drawAssignmentChart([["Namn", "Antal tickets"],
+  drawAssignmentChart([
     ...summarizeTicketsByAssignee([
       ...tickets.todoTickets,
       ...tickets.workingTickets,
       ...tickets.blockedTickets,
       ...tickets.approvedTickets,
       ...tickets.stagedForReleaseTickets
-    ]).sort(comparePerformance).slice(0, 5)
+    ])
+      .sort(comparePerformance)
+      .slice(0, 5)
   ]);
   window.setTimeout(() => location.reload(), 5 * 60000);
 
@@ -225,7 +223,10 @@ function summarizeTicketsByAssignee(tickets) {
   const nameAndTicketNumbers = tickets.reduce(
     (res, ticket) => ({
       ...res,
-      [ticket.assignedToFullString]: parseInt((res[ticket.assignedToFullString] || 0) + 1, 10)
+      [ticket.assignedToFullString]: parseInt(
+        (res[ticket.assignedToFullString] || 0) + 1,
+        10
+      )
     }),
     {}
   );
@@ -561,33 +562,10 @@ function documentWriteNecessaryStuff() {
             <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
+              google.charts.load('current', {'packages':['bar']});
               google.charts.load('current', {'packages':['corechart']});
-              google.charts.load('45', {'packages':['bar']});
-              google.charts.load('current', {'packages':['gauge']});
-              google.charts.setOnLoadCallback(drawGaugeChart);
-              google.charts.setOnLoadCallback(drawOverviewChart);
               google.charts.setOnLoadCallback(drawAssignmentChart);
-
-              function drawGaugeChart(normalizedDoernValue, nrTickets) {
-                var data = google.visualization.arrayToDataTable([
-                  ['Dörn', 'Värde'],
-                  ['', normalizedDoernValue],
-                ]);
-
-                var options = {
-                  width: 200, height: 200,
-                  redFrom: 0.25*nrTickets, redTo: 0.5*nrTickets,
-                  yellowFrom: 0.5*nrTickets, yellowTo: 0.75*nrTickets,
-                  greenFrom: 0.75*nrTickets, greenTo: nrTickets,
-                  max: nrTickets,
-                  minorTicks: 5,
-                  majorTicks: ['ZzzZz', 'Poor', 'Not terrible', 'Ok', 'Great'],
-                };
-
-                var chart = new google.visualization.Gauge(document.getElementById('gaugechart'));
-
-                chart.draw(data, options);
-              }
+              google.charts.setOnLoadCallback(drawOverviewChart);
 
               function drawOverviewChart(todo, active, blocked, testing, deployed) {
 
@@ -603,7 +581,7 @@ function documentWriteNecessaryStuff() {
                 var options = {
                   title: 'Ticket status overview',
                   width: 600,
-
+                  height: 200,
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -611,21 +589,31 @@ function documentWriteNecessaryStuff() {
               }
 
               function drawAssignmentChart(assignments) {
-                var data = google.visualization.arrayToDataTable(assignments);
+                var data = google.visualization.arrayToDataTable([
+                  ["Name", "Number"],
+                  ...assignments
+                ]);
+
+                var view = new google.visualization.DataView(data);
+                view.setColumns([0, 1, { 
+                  calc: "stringify",
+                  sourceColumn: 1,
+                  type: "string",
+                  role: "annotation" },
+                ]);
 
                 var options = {
-                  title: 'Workload assignment distribution',
-                  chartArea: {width: '50%'},
-                  legend: 'none',
-                  hAxis: {
-                    title: 'Antal tickets',
-                    minValue: 0
-                  },
+                  title: "Assignment distribution top #5",
+                  width: 900,
+                  height: 200,
+                  bar: {groupWidth: "95%"},
+                  legend: { position: "none" },
+                  vAxis: {
+                    title: '#Tickets'
+                  }
                 };
-
-                var chart = new google.visualization.BarChart(document.getElementById('barchart'));
-
-                chart.draw(data, options);
+                var chart = new google.visualization.ColumnChart(document.getElementById("barchart"));
+                chart.draw(view, options);
               }
             </script>
           </head>
