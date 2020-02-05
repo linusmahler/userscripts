@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Atos active tickets
 // @run-at document-start
-// @version      1.2.1
+// @version      1.2.2
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets assigned to ATOS in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_fixed_query=&sysparm_query=stateNOT%20INnew%2Cwork_in_progress%2Cclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_clear_stack=true
@@ -568,24 +568,21 @@ function documentWriteNecessaryStuff() {
               google.charts.setOnLoadCallback(drawOverviewChart);
 
               function drawOverviewChart(todo, active, blocked, testing, deployed) {
-
                 var data = google.visualization.arrayToDataTable([
-                  ['Task', 'Number of tickets'],
-                  ['Todo', todo],
-                  ['In progress', active],
-                  ['Inf. requested', blocked],
-                  ['Waiting for test', testing],
-                  ['In testing', deployed]
+                  ['Bulle', 'Todo', 'In progress', 'Inf. req', 'Waiting for test', 'In testing'],
+                  ['', todo, active, blocked, testing, deployed],
                 ]);
 
-                var options = {
-                  title: 'Ticket status overview',
-                  width: 600,
+                var options_fullStacked = {
+                  isStacked: 'percent',
                   height: 200,
+                  width: 600,
+                  legend: { position: 'left', maxLines: 3 },
+                  title: "Distribution of active tasks by state"
                 };
 
-                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-                chart.draw(data, options);
+                var chart = new google.visualization.BarChart(document.getElementById('piechart'));
+                chart.draw(data, options_fullStacked);
               }
 
               function drawAssignmentChart(assignments) {
@@ -595,7 +592,7 @@ function documentWriteNecessaryStuff() {
                 ]);
 
                 var view = new google.visualization.DataView(data);
-                view.setColumns([0, 1, { 
+                view.setColumns([0, 1, {
                   calc: "stringify",
                   sourceColumn: 1,
                   type: "string",
@@ -622,7 +619,7 @@ function documentWriteNecessaryStuff() {
           <div id="summaryContainer">
             <div id="headerContainer" class="headerContainer">
               <img height="100px" src="http://pluspng.com/img-png/atos-logo-png-other-resolutions-320-107-pixels-640.png" />
-              <div id="piechart" class="chart" ></div>
+              <div id="piechart" ></div>
               <div id="barchart"></div>
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
