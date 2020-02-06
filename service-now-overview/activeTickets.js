@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.7.2
+// @version      1.7.3
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -159,11 +159,11 @@
 })();
 
 function renderContent(tickets) {
-  renderTicketsForColumn(tickets.todoTickets, "Todo");
-  renderTicketsForColumn(tickets.workingTickets, "In progress");
-  renderTicketsForColumn(tickets.blockedTickets, "Information Requested");
-  renderTicketsForColumn(tickets.approvedTickets, "Waiting for test");
-  renderTicketsForColumn(tickets.stagedForReleaseTickets, "In testing");
+  renderTicketsForColumn(tickets.todoTickets, `Todo (${tickets.todoTickets.length})`);
+  renderTicketsForColumn(tickets.workingTickets, `In progress (${tickets.workingTickets.length})`);
+  renderTicketsForColumn(tickets.blockedTickets, `Inf. requested (${tickets.blockedTickets.length})`);
+  renderTicketsForColumn(tickets.approvedTickets, `Waiting for test (${tickets.approvedTickets.length})`);
+  renderTicketsForColumn(tickets.stagedForReleaseTickets, `In testing (${tickets.stagedForReleaseTickets.length})`);
 
   drawChart(
     tickets.todoTickets.length,
