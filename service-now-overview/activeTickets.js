@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.7.3
+// @version      1.7.4
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -159,11 +159,26 @@
 })();
 
 function renderContent(tickets) {
-  renderTicketsForColumn(tickets.todoTickets, `Todo (${tickets.todoTickets.length})`);
-  renderTicketsForColumn(tickets.workingTickets, `In progress (${tickets.workingTickets.length})`);
-  renderTicketsForColumn(tickets.blockedTickets, `Inf. requested (${tickets.blockedTickets.length})`);
-  renderTicketsForColumn(tickets.approvedTickets, `Waiting for test (${tickets.approvedTickets.length})`);
-  renderTicketsForColumn(tickets.stagedForReleaseTickets, `In testing (${tickets.stagedForReleaseTickets.length})`);
+  renderTicketsForColumn(
+    tickets.todoTickets,
+    `Todo (${tickets.todoTickets.length})`
+  );
+  renderTicketsForColumn(
+    tickets.workingTickets,
+    `In progress (${tickets.workingTickets.length})`
+  );
+  renderTicketsForColumn(
+    tickets.blockedTickets,
+    `Inf. requested (${tickets.blockedTickets.length})`
+  );
+  renderTicketsForColumn(
+    tickets.approvedTickets,
+    `Waiting for test (${tickets.approvedTickets.length})`
+  );
+  renderTicketsForColumn(
+    tickets.stagedForReleaseTickets,
+    `In testing (${tickets.stagedForReleaseTickets.length})`
+  );
 
   drawChart(
     tickets.todoTickets.length,
@@ -176,7 +191,15 @@ function renderContent(tickets) {
 
   document.getElementById("loaderContainer").style.cssText = "display: none;";
   document.getElementById("headerContainer").style.cssText = "display: flex;";
+  document.getElementById("updatedAt").innerHTML = getFormattedDate();
   document.body.style.background = "white";
+}
+
+function getFormattedDate() {
+  const date = new Date().toISOString();
+  var dateFormatted =
+    date.split("T")[0] + " " + date.split("T")[1].split(".")[0];
+  return dateFormatted;
 }
 
 function extractTicketDataFromRow(row) {
@@ -341,7 +364,6 @@ function renderTicketsForColumn(ticketColumn, title) {
     .appendChild(ticketColumnsContainer);
 }
 
-
 function documentWriteNecessaryStuff() {
   document.write(
     `<html>
@@ -379,6 +401,7 @@ function documentWriteNecessaryStuff() {
             <div id="headerContainer" class="headerContainer">
               <img height="201px" style="margin-top: 32px;" src="http://dailynewsdig.com/wp-content/uploads/2014/04/20-A-Team-Show-Facts-That-You-Probably-Never-Knew-1.jpg" />
               <div id="piechart" style="min-width: 400px; height: 201px;"></div>
+              <div class="updatedAt" id="updatedAt"></div>
             </div>
             <div class="allTicketsColumnsContainer" id="allTicketsColumnsContainer"></div>
           </div>
