@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Active tickets
 // @run-at document-start
-// @version      1.9
+// @version      1.9.1
 // @description  This script will show all active GRQ, PRB, CHG and INC tickets in one board.
 // @author       Linus Mähler
 // @match        https://siemensfs.service-now.com/interaction_list.do?sysparm_clear_stack=true&sysparm_query=stateNOT%20INclosed_complete%2Cclosed_abandoned%5Eassigned_to%3Djavascript:gs.getUserID()&sysparm_fixed_query=
@@ -59,8 +59,7 @@
     todoTickets: [],
     workingTickets: [],
     blockedTickets: [],
-    approvedTickets: [],
-    stagedForReleaseTickets: []
+    approvedTickets: []
   };
 
   let msgCount = 0;
@@ -79,10 +78,6 @@
       approvedTickets: [
         ...ticketsByStatus.approvedTickets,
         ...e.data.approvedTickets
-      ],
-      stagedForReleaseTickets: [
-        ...ticketsByStatus.stagedForReleaseTickets,
-        ...e.data.stagedForReleaseTickets
       ]
     };
 
@@ -112,8 +107,7 @@
           todoTickets: [],
           workingTickets: [],
           blockedTickets: [],
-          approvedTickets: [],
-          stagedForReleaseTickets: []
+          approvedTickets: []
         },
         "*"
       );
@@ -148,9 +142,6 @@
             (ticket.state === "Approved" &&
               ticket.stage !== "Assigned for Processing") ||
             (ticket.state === "Approved" && ticket.hasPr === true)
-        ),
-        stagedForReleaseTickets: tickets.filter(
-          ticket => ticket.state === "Deployed"
         )
       },
       "*"
@@ -175,17 +166,12 @@ function renderContent(tickets) {
     tickets.approvedTickets,
     `Waiting for test (${tickets.approvedTickets.length})`
   );
-  renderTicketsForColumn(
-    tickets.stagedForReleaseTickets,
-    `In testing (${tickets.stagedForReleaseTickets.length})`
-  );
 
   drawChart(
     tickets.todoTickets.length,
     tickets.workingTickets.length,
     tickets.blockedTickets.length,
-    tickets.approvedTickets.length,
-    tickets.stagedForReleaseTickets.length
+    tickets.approvedTickets.length
   );
   window.setTimeout(() => location.reload(), 5 * 60000);
 
@@ -463,8 +449,8 @@ function documentWriteNecessaryStuff() {
             .ticketColumnsContainer {
               list-style-type: none;
               margin: 0 16px 0 0;
-              min-width: calc(20% - 32px);
-              max-width: calc(20% - 32px);
+              min-width: calc(25% - 32px);
+              max-width: calc(25% - 32px);
               padding: 8px;
               background: #f5f5f5;
             }
@@ -523,6 +509,7 @@ function documentWriteNecessaryStuff() {
               margin-bottom: 8px;
               padding-right: 8px;
               word-break: break-word;
+              font-size: 24px;
             }
             
             .assignedToContainer {
