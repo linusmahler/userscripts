@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SieSmart localhost auto login
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Automatically login on SieSmart localhost
 // @author       You
 // @match        http://localhost:8080/frontend/*
