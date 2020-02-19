@@ -22,7 +22,7 @@
          const username = document.getElementById('username');
          const loginButton = document.getElementById('flogin');
          if (username && loginButton) {
-           username.value =  ${GID};
+           username.value =  "${GID}";
            loginButton.submit();
          }
        }
