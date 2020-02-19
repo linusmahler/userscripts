@@ -14,13 +14,15 @@
 
   const script = document.createElement("script");
 
+  const GID = "INSERT_YOUR_GID_HERE!";
+
   script.appendChild(
     document.createTextNode(`
        function autoLogin() {
          const username = document.getElementById('username');
          const loginButton = document.getElementById('flogin');
          if (username && loginButton) {
-           username.value =  'z0044w9p';
+           username.value =  ${GID};
            loginButton.submit();
          }
        }
