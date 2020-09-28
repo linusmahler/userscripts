@@ -1,27 +1,27 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { SparkData } from "../types/spark"
-import { Ticket } from "../types/ticket"
-import Column from "./Column"
+type HandlerFn<T> = (event: SparkMessageEvent<T>) => void
 
-type HandlerFn = (event: SparkMessageEvent) => void
+interface SparkMessageEvent<T> extends MessageEvent {
+  data: T
+}
 
-interface SparkMessageEvent extends MessageEvent {
-  data: SparkData
+interface AppProps<T> {
+  renderData(data: T): React.ReactNode
 }
 
 // Usage
-const App: React.FC = () => {
-  const [data, setData] = useState<SparkData>(null)
+const App = <T extends {}>({ renderData }: AppProps<T>) => {
+  const [data, setState] = useState<T | null>(null);
 
   // Event handler utilizing useCallback ...
   // ... so that reference never changes.
-  const handler = useCallback<HandlerFn>(
+  const handler = useCallback<HandlerFn<T>>(
     ({ data }) => {
       console.log("message!!!", data)
       // Update coordinates
-      setData(data)
+      setState(data)
     },
-    [setData]
+    [setState]
   )
 
   // Add event listener using our hook
@@ -30,11 +30,12 @@ const App: React.FC = () => {
   return (
     <>
       {!data && <div>Loading...</div>}
-      {data && (
-        <div
+      {data && renderData(data)}
+        {/* <div
           className="allTicketsColumnsContainer"
           id="allTicketsColumnsContainer"
         >
+          {state}
           <Column title="todoTickets" tickets={data.todoTickets} />
           <Column title="workingTickets" tickets={data.workingTickets} />
           <Column title="blockedTickets" tickets={data.blockedTickets} />
@@ -44,7 +45,7 @@ const App: React.FC = () => {
             tickets={data.stagedForReleaseTickets}
           />
         </div>
-      )}
+      )} */}
     </>
   )
 }
@@ -52,9 +53,9 @@ const App: React.FC = () => {
 export default App
 
 // Hook
-function useEventListener(eventName: string, handler: HandlerFn) {
+function useEventListener<T extends {}>(eventName: string, handler: HandlerFn<T>) {
   // Create a ref that stores handler
-  const savedHandler = useRef<HandlerFn>()
+  const savedHandler = useRef<HandlerFn<T>>()
 
   // Update ref.current value if handler changes.
   // This allows our effect below to always get latest handler ...
@@ -67,7 +68,7 @@ function useEventListener(eventName: string, handler: HandlerFn) {
   useEffect(
     () => {
       // Create event listener that calls handler function stored in ref
-      const eventListener = (event: SparkMessageEvent) =>
+      const eventListener = (event: SparkMessageEvent<T>) =>
         savedHandler.current(event)
 
       // Add event listener
@@ -81,7 +82,7 @@ function useEventListener(eventName: string, handler: HandlerFn) {
     [eventName, window] // Re-run if eventName or element changes
   )
 }
-/*
+
 window.setTimeout(() => {
   window.postMessage(
     {
@@ -405,4 +406,3 @@ window.setTimeout(() => {
     "*"
   )
 }, 1500)
-*/
