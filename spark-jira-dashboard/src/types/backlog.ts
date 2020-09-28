@@ -10,9 +10,9 @@ export interface BacklogTicketData {
 }
 
 export interface BacklogTicketsData {
-  incidents: BacklogTicketData
-  grqs: BacklogTicketData
-  chgs: BacklogTicketData
-  problems: BacklogTicketData
-  slas: BacklogTicketData
+  incidents: BacklogTicketData[]
+  grqs: BacklogTicketData[]
+  chgs: BacklogTicketData[]
+  problems: BacklogTicketData[]
+  slas: BacklogTicketData[]
 }

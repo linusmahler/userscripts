@@ -15,11 +15,10 @@ const BacklogPage: React.FC = () => (
           className="allTicketsColumnsContainer"
           id="allTicketsColumnsContainer"
         >
-          <div>hej</div>
-          {/* <Column title="INC" tickets={data.incidents} />
+          <Column title="INC" tickets={data.incidents} />
           <Column title="GRQ" tickets={data.grqs} />
           <Column title="CHG" tickets={data.chgs} />
-          <Column title="PRB" tickets={data.problems} /> */}
+          <Column title="PRB" tickets={data.problems} />
         </div>
       )}
     />

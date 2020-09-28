@@ -1,10 +1,10 @@
 import React from "react"
-import { Ticket } from "../types/ticket"
+import { Ticket, BacklogTicketData } from "../types/ticket"
 import TicketItem from "./TicketItem";
 
 interface ColumnProps {
   title: string
-  tickets: Ticket[]
+  tickets: BacklogTicketData[]
 }
 
 const Column: React.FC<ColumnProps> = ({ title, tickets }) => (
